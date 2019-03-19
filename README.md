@@ -1,4 +1,4 @@
-# docker_workshop
+# Docker Workshop
 
 NUS-ISS workshop 
 
