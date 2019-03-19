@@ -1,0 +1,66 @@
+apiVersion: apps/v2
+kind: Deployment
+
+metadata:
+  name: myapp-svc
+  namespace: myspace
+  labels:
+    name: myapp-svc
+
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      name: myapp-svc
+  template:
+    metadata:
+      name: myapp-svc
+      namespace: myspace
+      labels:
+        name: myapp-svc
+
+    spec:
+      containers:
+      - name: myapp-container
+        image: stackupiss/northwind-app:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_HOST
+          value: mydb-svc.myspace.svc.cluster.local
+
+
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: myapp-svc
+  namespace: myspace
+  labels:
+    name: myapp-svc
+
+spec:
+  type: LoadBalancer
+  selector:
+    name: myapp-pod
+  ports:
+  - port: 80
+    targetPort: 3000
+  
+  env:
+  - name: DB_HOST
+    value: mydb-svc.myspace.svc.cluster.local
+  - name: INSTANCE_IP_ADDRESS
+    valueFrom:
+      fieldRef:
+        fieldPath: status.prodIP
+
+  #

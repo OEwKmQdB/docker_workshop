@@ -1,0 +1,85 @@
+Create namespace.yaml
+    kubectl apply -f namespace.yaml
+    kubectl get ns
+
+Create pod.yaml
+    kubectl apply -f pod.yaml
+    kubectl get pod/mydb-pod -n myspace
+    kubectl describe pod/mydb-pod -n myspace    ## docker inspect
+    kubectl exec -ti mydb-pod -n myspace bash 
+
+    ## For multiple containers, use -c to specify container
+    kubectl exec -ti mydb-pod -n myspace -c mydb-container bash
+
+    ## To delete pod
+    kubectl delete pod/mydb-pod
+    kubectl delete -f pod.yaml
+
+    # To test connection (Don't use it in production!)
+    kubectl port-forward pod/mydb-pod 8080:3000 -n myspace
+
+Create db-deploy.yaml
+    # po = pod, rs = replica set, deploy = deployment
+    kubectl get po,rs,deploy -n myspace
+
+    # '-o wide' gives more info
+    watch kubectl get po,rs,deploy,svc -n myspace -o wide
+
+    # Scale from 1 replica to 2 
+    kubectl scale --replicas=2 deploy/db-deploy -n myspace
+
+    # DNS Name inside cluster: 
+    # <svc name> . <namespace> .svc.cluster.local
+    # eg: mydb-svc.myspace.svc.cluster.local
+
+Create NodePort in db-deploy.yaml after 3-dashes ---
+
+Create LoadBalancer in app-deploy.yaml after 3-dashes ---
+
+
+Create webui-sa.yaml
+    # Get Service Accounts
+    kubectl get sa -n kube-system
+
+    # Get cluster admin in cluster role
+    kubectl get clusterrole/cluster-admin -n kube-system
+    kubectl describe clusterrole/cluster-admin -n kube-system
+
+    # ServiceAccount - user
+    # Print out inf of the webui-admin we created
+    kubectl describe sa/webui-admin -n myspace
+
+    # Show your token
+    kubectl describe secret/<token_id> -n myspace
+
+    # Available secrets
+    kubectl get secret -n myspace
+
+Scale to more replicas
+
+    # Scale to 4 replicas
+    kubectl scale --replica=4 deploy/app-deploy -n myspace
+
+Create appscaler.yaml
+
+    # Automatic scaling 
+    # hpa - horizontal pod autoscaler
+    kubectl get po,deploy,svc,hpa -n myspace
+
+    # Apply appscaler.yaml
+    kubectl apply -f appscaler.yaml
+
+    # Apply rolling update
+    # apply -f to app-deploy.yaml , then
+    kubectl rollout history deploy/app-deploy -n myspace
+
+    # Create appv2-deploy.yaml 
+    # Copy all from app-deploy, change from v1 -> v2
+    # apply -f to appv2-deploy.yaml
+    
+    # See history 
+    kubectl rollout history deployment <deployment_name>
+
+    # Undo rollout ; Rollback to 3
+    kubectl undo deploy/app-deploy -n myspace --to-revision=3
+    
