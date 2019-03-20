@@ -1,0 +1,33 @@
+
+
+Apply service
+
+    kubectl apply -f service.yaml
+
+Apply deployment
+
+    kubectl apply -f deployment.yaml
+
+Get Ingress Gateway External IP
+
+    # All the traffic will go into this IP
+    kubectl get svc -n istio-system
+
+Create virtualservice
+
+    # When people go to /v1/hello
+    # Route it to the address at 'subset' (ie version-1)
+
+Create gateway.yaml
+
+    # Apply 
+    kubectl apply -f gateway.yaml
+
+Istio
+
+    kubectl apply -f <(istioctl kube-inject -f deployment.yaml)
+
+Logs
+
+    kubectl logs <Your pod> -c istio-proxy -f
+

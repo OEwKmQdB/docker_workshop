@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+
+metadata:
+  name: demopythonapp
+  labels:
+    name: demopythonapp
+
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      name: demopythonapp
+  template:
+    metadata:
+      name: demopythonapp
+      labels: 
+        name: demopythonapp
+    spec:
+      containers:
+      - name: demopythonappcontainer
+        image: xawntan/day3_image:v2
+        imagePullPolicy: Always
+        env: 
+        - name: SERVICE_VERSION
+          value: v2
+        ports:
+        - containerPort: 6000
+
