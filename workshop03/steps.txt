@@ -30,3 +30,4 @@ Istio
 Logs
 
     kubectl logs <Your pod> -c istio-proxy -f
+   
