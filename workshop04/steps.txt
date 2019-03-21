@@ -1,0 +1,52 @@
+
+Get context and install helm on it
+
+    # Get all existing contexts
+    kubectl config get-contexts
+
+    kubectl config use-context <name>
+
+    helm install
+
+Configuring Helm
+
+    kubectl -n kube-system create serviceaccount tiller
+
+    kubectl create clusterrolebinding tiller  --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+
+    helm init --service-account tiller
+
+    helm repo update
+
+    # Basic Commands
+    helm install <name> [--name <name>]
+    helm del <name> --purse
+    helm ls
+
+    helm create <chart-name>
+
+    helm upgrade <name>
+
+    helm history <name>
+
+Setting up the weatherapp
+
+    # Make changes to deployment.yaml, service.yaml and values.yaml
+    # Make sure you are in the right directory !
+    helm install weatherapp --name v1
+
+    kubectl port-forward <pod-name> 3000:3000  # external:internal 
+    
+    # If make any changes, use the following command to upgrade
+    helm upgrade myapp .
+
+
+    ####
+    specs: hosts  --- Domain name coming from
+    http: route: destination : host --- Kubernetes Service
+
+Rollback to default value if not defined
+
+    {{- define <variable> -}}
+    {{- default defaultValue value2 -}}
+    {{- end -}}
